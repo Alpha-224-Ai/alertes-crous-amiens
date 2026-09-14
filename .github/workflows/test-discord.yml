@@ -1,0 +1,17 @@
+name: Test Discord
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Envoyer un message de test sur Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content":"✅ Test réussi ! Le système Alertes Logements CROUS – Amiens est connecté à Discord."}' \
+          "$DISCORD_WEBHOOK_URL"
