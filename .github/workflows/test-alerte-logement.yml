@@ -1,0 +1,56 @@
+name: Test alerte logement
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Envoyer une fausse alerte Castillon
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          cat > payload.json <<'JSON'
+          {
+            "content": "🧪 **TEST DU SYSTÈME D'ALERTE CROUS — NE PAS TENIR COMPTE DE CETTE DISPONIBILITÉ**",
+            "embeds": [
+              {
+                "title": "🏠 Résidence du Castillon — TEST",
+                "url": "https://trouverunlogement.lescrous.fr/tools/47/accommodations/1733",
+                "description": "✅ **Logement disponible — SIMULATION**\n\n🔗 **[VOIR / RÉSERVER CE LOGEMENT](https://trouverunlogement.lescrous.fr/tools/47/accommodations/1733)**",
+                "fields": [
+                  {
+                    "name": "📍 Ville",
+                    "value": "Amiens",
+                    "inline": true
+                  },
+                  {
+                    "name": "🏢 Résidence",
+                    "value": "Castillon",
+                    "inline": true
+                  },
+                  {
+                    "name": "📐 Surface",
+                    "value": "9 m² — donnée de test",
+                    "inline": true
+                  },
+                  {
+                    "name": "💶 Loyer",
+                    "value": "Donnée de test",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "🧪 Simulation uniquement — aucune nouvelle disponibilité n'a été détectée."
+                }
+              }
+            ]
+          }
+          JSON
+
+          curl -f \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            "$DISCORD_WEBHOOK_URL"
