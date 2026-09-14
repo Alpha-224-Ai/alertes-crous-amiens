@@ -193,7 +193,7 @@ def fetch_logements():
 
 def load_previous_state():
     if not os.path.exists(STATE_FILE):
-        return set()
+        return None
 
     try:
         with open(
@@ -304,6 +304,13 @@ def main():
     )
 
     previous_ids = load_previous_state()
+    if previous_ids is None:
+        print(
+            "Première exécution : création de la liste "
+            "de référence. Aucune alerte envoyée."
+        )
+        save_state(logements)
+        return
 
     nouveaux = [
         logement
